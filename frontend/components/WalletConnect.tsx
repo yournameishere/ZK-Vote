@@ -123,64 +123,53 @@ export function WalletConnect() {
 
   return (
     <div className="relative flex flex-col gap-2">
-      {availableWallets.length === 1 ? (
-        <button
-          onClick={() => handleConnect(availableWallets[0])}
-          disabled={loading}
-          className="bg-gradient-to-r from-primary-500 via-blue-500 to-primary-600 hover:from-primary-600 hover:via-blue-600 hover:to-primary-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl flex items-center justify-center gap-2 transform hover:scale-105"
-        >
-          {loading ? (
-            <>
-              <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-              <span>Connecting...</span>
-            </>
-          ) : (
-            <>
-              <span className="text-lg">{getWalletIcon(availableWallets[0])}</span>
-              <span>Connect {getWalletName(availableWallets[0])}</span>
-            </>
-          )}
-        </button>
-      ) : (
+      <button
+        onClick={() => setShowWalletSelector(!showWalletSelector)}
+        disabled={loading}
+        className="bg-gradient-to-r from-primary-500 via-blue-500 to-primary-600 hover:from-primary-600 hover:via-blue-600 hover:to-primary-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:scale-105"
+      >
+        {loading ? (
+          <span className="flex items-center gap-2">
+            <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+            Connecting...
+          </span>
+        ) : (
+          <span className="flex items-center gap-2">
+            <span>💼</span>
+            <span>Connect Wallet</span>
+          </span>
+        )}
+      </button>
+      {showWalletSelector && (
         <>
-          <button
-            onClick={() => setShowWalletSelector(!showWalletSelector)}
-            disabled={loading}
-            className="bg-gradient-to-r from-primary-500 via-blue-500 to-primary-600 hover:from-primary-600 hover:via-blue-600 hover:to-primary-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:scale-105"
-          >
-            {loading ? (
-              <span className="flex items-center gap-2">
-                <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-                Connecting...
-              </span>
+          <div 
+            className="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm" 
+            onClick={() => setShowWalletSelector(false)}
+          />
+          <div className="absolute top-full mt-2 right-0 bg-white border-2 border-primary-200 rounded-xl shadow-2xl p-3 z-50 min-w-[240px] animate-slide-up">
+            <p className="text-xs font-semibold text-gray-500 mb-2 px-2">Select Wallet</p>
+            {availableWallets.length > 0 ? (
+              availableWallets.map((walletType) => (
+                <button
+                  key={walletType}
+                  onClick={() => handleConnect(walletType)}
+                  className="w-full text-left px-4 py-3 hover:bg-gradient-to-r hover:from-primary-50 hover:to-blue-50 rounded-lg transition-all duration-200 flex items-center gap-3 group"
+                >
+                  <span className="text-2xl group-hover:scale-110 transition-transform">{getWalletIcon(walletType)}</span>
+                  <span className="font-semibold text-gray-800 group-hover:text-primary-700">{getWalletName(walletType)}</span>
+                </button>
+              ))
             ) : (
-              <span className="flex items-center gap-2">
-                <span>💼</span>
-                <span>Connect Wallet</span>
-              </span>
-            )}
-          </button>
-          {showWalletSelector && (
-            <>
-              <div 
-                className="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm" 
-                onClick={() => setShowWalletSelector(false)}
-              />
-              <div className="absolute top-full mt-2 right-0 bg-white border-2 border-primary-200 rounded-xl shadow-2xl p-3 z-50 min-w-[240px] animate-slide-up">
-                <p className="text-xs font-semibold text-gray-500 mb-2 px-2">Select Wallet</p>
-                {availableWallets.map((walletType) => (
-                  <button
-                    key={walletType}
-                    onClick={() => handleConnect(walletType)}
-                    className="w-full text-left px-4 py-3 hover:bg-gradient-to-r hover:from-primary-50 hover:to-blue-50 rounded-lg transition-all duration-200 flex items-center gap-3 group"
-                  >
-                    <span className="text-2xl group-hover:scale-110 transition-transform">{getWalletIcon(walletType)}</span>
-                    <span className="font-semibold text-gray-800 group-hover:text-primary-700">{getWalletName(walletType)}</span>
-                  </button>
-                ))}
+              <div className="px-4 py-3 text-sm text-gray-500">
+                <p className="mb-2">No wallets detected.</p>
+                <div className="flex flex-col gap-1 text-xs">
+                  <a href="https://puzzle.online" target="_blank" rel="noopener noreferrer" className="text-primary-600 hover:underline">Install Puzzle</a>
+                  <a href="https://www.leo.app" target="_blank" rel="noopener noreferrer" className="text-primary-600 hover:underline">Install Leo</a>
+                  <a href="https://foxwallet.com" target="_blank" rel="noopener noreferrer" className="text-primary-600 hover:underline">Install Fox</a>
+                </div>
               </div>
-            </>
-          )}
+            )}
+          </div>
         </>
       )}
       {error && (

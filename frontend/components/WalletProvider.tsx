@@ -22,11 +22,12 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     checkAvailableWallets();
-    checkConnection();
+    // Only check for existing connection, don't auto-connect
+    checkExistingConnection();
     
     // Listen for wallet connection events
     const handleWalletConnect = () => {
-      checkConnection();
+      checkExistingConnection();
     };
     
     window.addEventListener('walletConnected', handleWalletConnect);
@@ -41,9 +42,9 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
     setAvailableWallets(wallets);
   };
 
-  const checkConnection = async () => {
+  const checkExistingConnection = async () => {
     try {
-      // Check localStorage for previous connection
+      // Only check localStorage for previous connection (user manually connected before)
       if (typeof window !== 'undefined') {
         const stored = localStorage.getItem('zkvote_wallet');
         if (stored) {
@@ -62,75 +63,50 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
                 setLoading(false);
                 return;
               }
-            }
-          } catch (e) {
-            // Invalid stored data, continue with normal check
-          }
-        }
-      }
-
-      // Check Puzzle Wallet first (most common)
-      if (hasPuzzleWallet()) {
-        const account = await getPuzzleAccount();
-        if (account) {
-          setWallet({
-            address: account.address,
-            network: account.network,
-            walletType: "puzzle",
-            balances: account.balances,
-          });
-          setLoading(false);
-          return;
-        }
-      }
-
-      // Check Leo Wallet
-      if (hasLeoWallet()) {
-        try {
-          const leoWallet = (window as any).leoWallet;
-          // Check if connected
-          if (leoWallet?.isConnected?.() || leoWallet?.publicKey) {
-            const address = leoWallet.address || leoWallet.publicKey;
-            if (address) {
-              setWallet({
-                address: address,
-                network: leoWallet.network || "testnet",
-                walletType: "leo",
-              });
-              setLoading(false);
-              return;
-            }
-          }
-        } catch (e) {
-          console.warn("Leo Wallet check failed:", e);
-        }
-      }
-
-      // Check Fox Wallet
-      if (hasFoxWallet()) {
-        try {
-          const foxProvider = (window as any).foxwallet?.aleo;
-          if (foxProvider) {
-            const isConnected = await foxProvider.isConnected?.();
-            if (isConnected) {
-              const account = await foxProvider.getAccount?.();
-              if (account) {
-                setWallet({
-                  address: account.address || account.publicKey || "",
-                  network: account.network || "testnet",
-                  walletType: "fox",
-                });
-                setLoading(false);
-                return;
+            } else if (walletData.type === 'leo' && hasLeoWallet()) {
+              const leoWallet = (window as any).leoWallet;
+              if (leoWallet?.publicKey || leoWallet?.address) {
+                const address = leoWallet.address || leoWallet.publicKey;
+                if (address === walletData.address) {
+                  setWallet({
+                    address: address,
+                    network: leoWallet.network || "testnet",
+                    walletType: "leo",
+                  });
+                  setLoading(false);
+                  return;
+                }
+              }
+            } else if (walletData.type === 'fox' && hasFoxWallet()) {
+              const foxProvider = (window as any).foxwallet?.aleo;
+              if (foxProvider) {
+                try {
+                  const isConnected = await foxProvider.isConnected?.();
+                  if (isConnected) {
+                    const account = await foxProvider.getAccount?.();
+                    if (account && (account.address || account.publicKey) === walletData.address) {
+                      setWallet({
+                        address: account.address || account.publicKey || "",
+                        network: account.network || "testnet",
+                        walletType: "fox",
+                      });
+                      setLoading(false);
+                      return;
+                    }
+                  }
+                } catch (e) {
+                  // Ignore errors
+                }
               }
             }
+          } catch (e) {
+            // Invalid stored data, clear it
+            localStorage.removeItem('zkvote_wallet');
           }
-        } catch (e) {
-          console.warn("Fox Wallet check failed:", e);
         }
       }
     } catch (error) {
-      console.error("Error checking wallet connection:", error);
+      console.error("Error checking existing connection:", error);
     } finally {
       setLoading(false);
     }
