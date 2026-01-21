@@ -121,6 +121,42 @@ export function WalletConnect() {
   }
 
 
+  // If only Puzzle Wallet available, connect directly without dropdown
+  if (availableWallets.length === 1 && availableWallets[0] === "puzzle") {
+    return (
+      <div className="relative flex flex-col gap-2">
+        <button
+          onClick={() => handleConnect("puzzle")}
+          disabled={loading}
+          className="bg-gradient-to-r from-primary-500 via-blue-500 to-primary-600 hover:from-primary-600 hover:via-blue-600 hover:to-primary-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl flex items-center justify-center gap-2 transform hover:scale-105"
+        >
+          {loading ? (
+            <>
+              <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+              <span>Connecting...</span>
+            </>
+          ) : (
+            <>
+              <span className="text-lg">🧩</span>
+              <span>Connect Puzzle Wallet</span>
+            </>
+          )}
+        </button>
+        {error && (
+          <WalletErrorHandler error={error} walletType="puzzle" />
+        )}
+        {signature && !error && (
+          <div className="bg-blue-50 border-2 border-blue-300 rounded-lg p-2 shadow-sm">
+            <p className="text-blue-700 text-xs font-mono flex items-center gap-2">
+              <span>🔐</span>
+              <span>Signature: {signature}</span>
+            </p>
+          </div>
+        )}
+      </div>
+    );
+  }
+
   return (
     <div className="relative flex flex-col gap-2">
       <button
