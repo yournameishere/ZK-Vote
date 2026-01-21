@@ -15,8 +15,7 @@ ZK-Vote solves the fundamental privacy problem in digital voting systems. Tradit
 - **On-Chain Storage**: All votes are permanently stored on Aleo blockchain
 
 
-
-live url : https://zk-vote-omega.vercel.app/
+ 
 
 ## 🎯 Use Cases
 
