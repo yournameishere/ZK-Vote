@@ -52,7 +52,9 @@ export function Navbar() {
             >
               About
             </Link>
-            <WalletConnect />
+            <div className="relative">
+              <WalletConnect />
+            </div>
           </div>
         </div>
       </div>
