@@ -6,13 +6,7 @@
 import { connect as puzzleConnect, getAccount, Network } from "@puzzlehq/sdk-core";
 import { ContractCall } from "./aleo-contracts";
 
-declare global {
-  interface Window {
-    aleo?: {
-      puzzleWalletClient?: any;
-    };
-  }
-}
+// Window types are declared in types/window.d.ts
 
 /**
  * Execute a contract transition through Puzzle Wallet
