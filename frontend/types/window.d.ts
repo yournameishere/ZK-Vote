@@ -5,7 +5,26 @@ declare global {
       puzzleWalletClient?: any;
       foxWallet?: any;
     };
-    leoWallet?: any;
+    leoWallet?: {
+      connect?: () => Promise<any>;
+      getAccount?: () => Promise<any>;
+      isConnected?: () => boolean;
+      disconnect?: () => void;
+      publicKey?: string;
+      address?: string;
+    };
+    leo?: {
+      isConnected?: boolean;
+      connect?: () => Promise<any>;
+    };
+    foxwallet?: {
+      aleo?: {
+        connect?: (chain: string, network: string) => Promise<any>;
+        isConnected?: () => Promise<boolean>;
+        getAccount?: () => Promise<any>;
+        disconnect?: () => void;
+      };
+    };
   }
 }
 

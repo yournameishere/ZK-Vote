@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useWallet } from "./WalletProvider";
 import { WalletType } from "@/lib/wallets";
+import { WalletErrorHandler } from "./WalletErrorHandler";
 
 export function WalletConnect() {
   const { wallet, connected, connect, disconnect, loading, availableWallets } = useWallet();
@@ -11,33 +12,22 @@ export function WalletConnect() {
   const [signature, setSignature] = useState<string | null>(null);
   const [connectingWallet, setConnectingWallet] = useState<WalletType | null>(null);
 
-  useEffect(() => {
-    // Auto-connect if only one wallet available and not connected
-    // Only auto-connect after user interaction (not on page load)
-    const handleUserInteraction = () => {
-      if (availableWallets.length === 1 && !connected && !loading && !error) {
-        handleConnect(availableWallets[0]);
-      }
-    };
-    
-    // Listen for click events to trigger auto-connect
-    if (availableWallets.length === 1 && !connected) {
-      document.addEventListener('click', handleUserInteraction, { once: true });
-      return () => document.removeEventListener('click', handleUserInteraction);
-    }
-  }, [availableWallets.length, connected, loading, error]);
 
   const handleConnect = async (walletType?: WalletType) => {
     try {
       setError(null);
       setShowWalletSelector(false);
-      setConnectingWallet(walletType || availableWallets[0] || null);
+      const selectedWallet = walletType || availableWallets[0] || null;
+      setConnectingWallet(selectedWallet);
       
       // Generate a signature/connection ID for display
       const connectionId = `conn_${Date.now()}_${Math.random().toString(36).substring(7)}`;
       setSignature(connectionId);
       
-      await connect(walletType);
+      // Add delay to show signature
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      await connect(selectedWallet);
       
       // Clear signature after successful connection
       setTimeout(() => {
@@ -45,7 +35,9 @@ export function WalletConnect() {
         setConnectingWallet(null);
       }, 2000);
     } catch (err: any) {
-      setError(err.message || "Failed to connect wallet");
+      console.error("Wallet connection error:", err);
+      const errorMessage = err.message || "Failed to connect wallet. Please ensure the wallet extension is installed and unlocked.";
+      setError(errorMessage);
       setSignature(null);
       setConnectingWallet(null);
     }
@@ -128,44 +120,6 @@ export function WalletConnect() {
     );
   }
 
-  if (availableWallets.length === 0) {
-    return (
-      <div className="bg-gradient-to-r from-yellow-50 to-orange-50 border-2 border-yellow-300 rounded-lg p-3 shadow-sm">
-        <p className="text-yellow-800 text-sm font-semibold mb-2 flex items-center gap-2">
-          <span>⚠️</span>
-          <span>No wallet detected</span>
-        </p>
-        <div className="flex flex-wrap gap-2 text-xs">
-          <a
-            href="https://puzzle.online"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-primary-600 hover:text-primary-700 underline font-medium hover:scale-105 transition-transform"
-          >
-            Install Puzzle
-          </a>
-          <span className="text-gray-400">•</span>
-          <a
-            href="https://www.leo.app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-primary-600 hover:text-primary-700 underline font-medium hover:scale-105 transition-transform"
-          >
-            Install Leo
-          </a>
-          <span className="text-gray-400">•</span>
-          <a
-            href="https://foxwallet.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-primary-600 hover:text-primary-700 underline font-medium hover:scale-105 transition-transform"
-          >
-            Install Fox
-          </a>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="relative flex flex-col gap-2">
@@ -230,12 +184,7 @@ export function WalletConnect() {
         </>
       )}
       {error && (
-        <div className="bg-red-50 border-2 border-red-300 rounded-lg p-3 shadow-sm animate-fade-in">
-          <p className="text-red-700 text-sm font-semibold flex items-center gap-2">
-            <span>❌</span>
-            <span>{error}</span>
-          </p>
-        </div>
+        <WalletErrorHandler error={error} walletType={connectingWallet || undefined} />
       )}
       {signature && !error && (
         <div className="bg-blue-50 border-2 border-blue-300 rounded-lg p-2 shadow-sm">

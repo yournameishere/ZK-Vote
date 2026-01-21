@@ -86,35 +86,47 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
 
       // Check Leo Wallet
       if (hasLeoWallet()) {
-        const leoWallet = (window as any).leoWallet;
-        if (leoWallet?.isConnected?.()) {
-          const account = await leoWallet.getAccount();
-          if (account) {
-            setWallet({
-              address: account.address || account.publicKey || "",
-              network: account.network || "testnet",
-              walletType: "leo",
-            });
-            setLoading(false);
-            return;
+        try {
+          const leoWallet = (window as any).leoWallet;
+          // Check if connected
+          if (leoWallet?.isConnected?.() || leoWallet?.publicKey) {
+            const address = leoWallet.address || leoWallet.publicKey;
+            if (address) {
+              setWallet({
+                address: address,
+                network: leoWallet.network || "testnet",
+                walletType: "leo",
+              });
+              setLoading(false);
+              return;
+            }
           }
+        } catch (e) {
+          console.warn("Leo Wallet check failed:", e);
         }
       }
 
       // Check Fox Wallet
       if (hasFoxWallet()) {
-        const foxWallet = (window as any).aleo.foxWallet;
-        if (foxWallet?.isConnected?.()) {
-          const account = await foxWallet.getAccount();
-          if (account) {
-            setWallet({
-              address: account.address || account.publicKey || "",
-              network: account.network || "testnet",
-              walletType: "fox",
-            });
-            setLoading(false);
-            return;
+        try {
+          const foxProvider = (window as any).foxwallet?.aleo;
+          if (foxProvider) {
+            const isConnected = await foxProvider.isConnected?.();
+            if (isConnected) {
+              const account = await foxProvider.getAccount?.();
+              if (account) {
+                setWallet({
+                  address: account.address || account.publicKey || "",
+                  network: account.network || "testnet",
+                  walletType: "fox",
+                });
+                setLoading(false);
+                return;
+              }
+            }
           }
+        } catch (e) {
+          console.warn("Fox Wallet check failed:", e);
         }
       }
     } catch (error) {
@@ -179,9 +191,17 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
     }
     // Disconnect from wallet if needed
     if (wallet?.walletType === "leo" && hasLeoWallet()) {
-      (window as any).leoWallet?.disconnect?.();
+      try {
+        (window as any).leoWallet?.disconnect?.();
+      } catch (e) {
+        console.warn("Leo Wallet disconnect error:", e);
+      }
     } else if (wallet?.walletType === "fox" && hasFoxWallet()) {
-      (window as any).aleo?.foxWallet?.disconnect?.();
+      try {
+        (window as any).foxwallet?.aleo?.disconnect?.();
+      } catch (e) {
+        console.warn("Fox Wallet disconnect error:", e);
+      }
     }
   };
 

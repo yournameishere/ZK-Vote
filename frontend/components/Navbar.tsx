@@ -10,13 +10,13 @@ export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <nav className="bg-white/95 backdrop-blur-lg border-b-2 border-primary-200 sticky top-0 z-50 shadow-md">
+    <nav className="bg-white/95 backdrop-blur-lg border-b-2 border-primary-200 sticky top-0 z-50 shadow-lg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center group">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-primary-500 to-blue-500 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform shadow-md">
+              <div className="w-9 h-9 bg-gradient-to-br from-primary-500 via-blue-500 to-primary-600 rounded-xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-3 transition-all shadow-lg group-hover:shadow-xl">
                 <span className="text-white font-bold text-lg">Z</span>
               </div>
               <h1 className="text-2xl font-bold bg-gradient-to-r from-primary-600 via-blue-600 to-primary-500 bg-clip-text text-transparent group-hover:from-primary-700 group-hover:via-blue-700 group-hover:to-primary-600 transition-all">
@@ -26,40 +26,45 @@ export function Navbar() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-1">
+          <div className="hidden md:flex items-center gap-2">
             <Link
               href="/explore"
-              className="px-4 py-2 text-primary-600 hover:text-primary-700 font-semibold transition-all hover:bg-primary-50 rounded-lg hover:scale-105"
+              className="px-4 py-2 text-primary-600 hover:text-primary-700 font-semibold transition-all hover:bg-gradient-to-r hover:from-primary-50 hover:to-blue-50 rounded-lg hover:scale-105 relative group"
             >
               Explore
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary-600 group-hover:w-full transition-all duration-300"></span>
             </Link>
             <Link
               href="/create"
-              className="px-4 py-2 text-primary-600 hover:text-primary-700 font-semibold transition-all hover:bg-primary-50 rounded-lg hover:scale-105"
+              className="px-4 py-2 text-primary-600 hover:text-primary-700 font-semibold transition-all hover:bg-gradient-to-r hover:from-primary-50 hover:to-blue-50 rounded-lg hover:scale-105 relative group"
             >
               Create Vote
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary-600 group-hover:w-full transition-all duration-300"></span>
             </Link>
             {connected && (
               <>
                 <Link
                   href="/dashboard"
-                  className="px-4 py-2 text-primary-600 hover:text-primary-700 font-semibold transition-all hover:bg-primary-50 rounded-lg hover:scale-105"
+                  className="px-4 py-2 text-primary-600 hover:text-primary-700 font-semibold transition-all hover:bg-gradient-to-r hover:from-primary-50 hover:to-blue-50 rounded-lg hover:scale-105 relative group"
                 >
                   Dashboard
+                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary-600 group-hover:w-full transition-all duration-300"></span>
                 </Link>
                 <Link
                   href="/subscription"
-                  className="px-4 py-2 text-primary-600 hover:text-primary-700 font-semibold transition-all hover:bg-primary-50 rounded-lg hover:scale-105"
+                  className="px-4 py-2 text-primary-600 hover:text-primary-700 font-semibold transition-all hover:bg-gradient-to-r hover:from-primary-50 hover:to-blue-50 rounded-lg hover:scale-105 relative group"
                 >
                   Subscription
+                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary-600 group-hover:w-full transition-all duration-300"></span>
                 </Link>
               </>
             )}
             <Link
               href="/about"
-              className="px-4 py-2 text-primary-600 hover:text-primary-700 font-semibold transition-all hover:bg-primary-50 rounded-lg hover:scale-105"
+              className="px-4 py-2 text-primary-600 hover:text-primary-700 font-semibold transition-all hover:bg-gradient-to-r hover:from-primary-50 hover:to-blue-50 rounded-lg hover:scale-105 relative group"
             >
               About
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary-600 group-hover:w-full transition-all duration-300"></span>
             </Link>
           </div>
 
