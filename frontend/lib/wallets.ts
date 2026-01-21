@@ -32,12 +32,13 @@ export function hasFoxWallet(): boolean {
   return !!(window as any).foxwallet?.aleo || !!(window as any).foxwallet;
 }
 
-// Get available wallets
+// Get available wallets (only Puzzle Wallet for now)
 export function getAvailableWallets(): WalletType[] {
   const wallets: WalletType[] = [];
   if (hasPuzzleWallet()) wallets.push("puzzle");
-  if (hasLeoWallet()) wallets.push("leo");
-  if (hasFoxWallet()) wallets.push("fox");
+  // Leo and Fox wallets temporarily disabled
+  // if (hasLeoWallet()) wallets.push("leo");
+  // if (hasFoxWallet()) wallets.push("fox");
   return wallets;
 }
 

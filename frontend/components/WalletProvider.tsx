@@ -37,8 +37,9 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
   const checkAvailableWallets = () => {
     const wallets: WalletType[] = [];
     if (hasPuzzleWallet()) wallets.push("puzzle");
-    if (hasLeoWallet()) wallets.push("leo");
-    if (hasFoxWallet()) wallets.push("fox");
+    // Leo and Fox wallets temporarily disabled
+    // if (hasLeoWallet()) wallets.push("leo");
+    // if (hasFoxWallet()) wallets.push("fox");
     setAvailableWallets(wallets);
   };
 

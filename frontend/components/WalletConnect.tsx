@@ -161,11 +161,9 @@ export function WalletConnect() {
               ))
             ) : (
               <div className="px-4 py-3 text-sm text-gray-500">
-                <p className="mb-2">No wallets detected.</p>
+                <p className="mb-2">Puzzle Wallet not detected.</p>
                 <div className="flex flex-col gap-1 text-xs">
-                  <a href="https://puzzle.online" target="_blank" rel="noopener noreferrer" className="text-primary-600 hover:underline">Install Puzzle</a>
-                  <a href="https://www.leo.app" target="_blank" rel="noopener noreferrer" className="text-primary-600 hover:underline">Install Leo</a>
-                  <a href="https://foxwallet.com" target="_blank" rel="noopener noreferrer" className="text-primary-600 hover:underline">Install Fox</a>
+                  <a href="https://puzzle.online" target="_blank" rel="noopener noreferrer" className="text-primary-600 hover:underline">Install Puzzle Wallet</a>
                 </div>
               </div>
             )}
