@@ -23,6 +23,14 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     checkAvailableWallets();
     checkConnection();
+    
+    // Listen for wallet connection events
+    const handleWalletConnect = () => {
+      checkConnection();
+    };
+    
+    window.addEventListener('walletConnected', handleWalletConnect);
+    return () => window.removeEventListener('walletConnected', handleWalletConnect);
   }, []);
 
   const checkAvailableWallets = () => {
@@ -35,6 +43,32 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
 
   const checkConnection = async () => {
     try {
+      // Check localStorage for previous connection
+      if (typeof window !== 'undefined') {
+        const stored = localStorage.getItem('zkvote_wallet');
+        if (stored) {
+          try {
+            const walletData = JSON.parse(stored);
+            // Verify wallet is still connected
+            if (walletData.type === 'puzzle' && hasPuzzleWallet()) {
+              const account = await getPuzzleAccount();
+              if (account && account.address === walletData.address) {
+                setWallet({
+                  address: account.address,
+                  network: account.network,
+                  walletType: "puzzle",
+                  balances: account.balances,
+                });
+                setLoading(false);
+                return;
+              }
+            }
+          } catch (e) {
+            // Invalid stored data, continue with normal check
+          }
+        }
+      }
+
       // Check Puzzle Wallet first (most common)
       if (hasPuzzleWallet()) {
         const account = await getPuzzleAccount();
@@ -116,6 +150,16 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
 
       if (connection) {
         setWallet(connection);
+        // Dispatch event for other components
+        window.dispatchEvent(new Event('walletConnected'));
+        // Store connection in localStorage for persistence
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('zkvote_wallet', JSON.stringify({
+            type: connection.walletType,
+            address: connection.address,
+            network: connection.network,
+          }));
+        }
       } else {
         throw new Error(`Failed to connect to ${type} wallet`);
       }
@@ -129,6 +173,10 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
 
   const disconnect = () => {
     setWallet(null);
+    // Clear stored connection
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('zkvote_wallet');
+    }
     // Disconnect from wallet if needed
     if (wallet?.walletType === "leo" && hasLeoWallet()) {
       (window as any).leoWallet?.disconnect?.();
