@@ -79,13 +79,4 @@ export async function getPuzzleAccount(): Promise<PuzzleWalletConnection | null>
   }
 }
 
-// Declare global window type for TypeScript
-declare global {
-  interface Window {
-    aleo?: {
-      puzzleWalletClient?: any;
-      foxWallet?: any;
-    };
-    leoWallet?: any;
-  }
-}
+// Window types are declared in types/window.d.ts
