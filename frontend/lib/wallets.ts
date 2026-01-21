@@ -87,13 +87,4 @@ export async function connectFoxWallet(): Promise<WalletConnection | null> {
   }
 }
 
-// Declare global window types
-declare global {
-  interface Window {
-    aleo?: {
-      puzzleWalletClient?: any;
-      foxWallet?: any;
-    };
-    leoWallet?: any;
-  }
-}
+// Window types are declared in puzzle.ts to avoid conflicts

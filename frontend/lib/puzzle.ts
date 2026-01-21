@@ -84,6 +84,8 @@ declare global {
   interface Window {
     aleo?: {
       puzzleWalletClient?: any;
+      foxWallet?: any;
     };
+    leoWallet?: any;
   }
 }
