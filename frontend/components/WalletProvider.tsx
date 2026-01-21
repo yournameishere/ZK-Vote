@@ -35,12 +35,23 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const checkAvailableWallets = () => {
-    const wallets: WalletType[] = [];
-    if (hasPuzzleWallet()) wallets.push("puzzle");
-    // Leo and Fox wallets temporarily disabled
-    // if (hasLeoWallet()) wallets.push("leo");
-    // if (hasFoxWallet()) wallets.push("fox");
+    // Always allow Puzzle Wallet connection attempt
+    // The SDK will handle errors if wallet isn't available
+    const wallets: WalletType[] = ["puzzle"];
     setAvailableWallets(wallets);
+    
+    // Also check periodically in case wallet loads after page load
+    if (typeof window !== 'undefined') {
+      const checkInterval = setInterval(() => {
+        if (hasPuzzleWallet() && wallets.length === 0) {
+          setAvailableWallets(["puzzle"]);
+          clearInterval(checkInterval);
+        }
+      }, 1000);
+      
+      // Stop checking after 10 seconds
+      setTimeout(() => clearInterval(checkInterval), 10000);
+    }
   };
 
   const checkExistingConnection = async () => {
