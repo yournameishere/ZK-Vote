@@ -1,0 +1,7 @@
+{
+  "program": "eligibility_zkvote_4521.aleo",
+  "version": "1.0.0",
+  "description": "ZK-Vote Eligibility Verification Contract - Verifies NFT holders, credential holders, and whitelisted wallets",
+  "license": "MIT",
+  "dependencies": []
+}

@@ -1,0 +1,7 @@
+{
+  "program": "voting_zkvote_4522.aleo",
+  "version": "1.0.0",
+  "description": "ZK-Vote Voting Contract - Handles election creation, vote casting, and nullifier tracking",
+  "license": "MIT",
+  "dependencies": []
+}

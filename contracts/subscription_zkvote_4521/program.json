@@ -1,0 +1,7 @@
+{
+  "program": "subscription_zkvote_4522.aleo",
+  "version": "1.0.0",
+  "description": "ZK-Vote Subscription Contract - Manages premium subscriptions and feature access",
+  "license": "MIT",
+  "dependencies": []
+}

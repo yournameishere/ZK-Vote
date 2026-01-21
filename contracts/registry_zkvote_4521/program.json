@@ -1,0 +1,7 @@
+{
+  "program": "registry_zkvote_4521.aleo",
+  "version": "1.0.0",
+  "description": "ZK-Vote Registry Contract - Stores election metadata and tracks election status",
+  "license": "MIT",
+  "dependencies": []
+}
